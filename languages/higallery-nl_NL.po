@@ -1,0 +1,93 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: HiGallery\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-13 06:03+0000\n"
+"PO-Revision-Date: 2025-07-13 08:31+0000\n"
+"Last-Translator: Joop\n"
+"Language-Team: Nederlands\n"
+"Language: nl_NL\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.0; wp-6.8.1; php-8.2.28\n"
+"X-Domain: higallery"
+
+#: includes/gallery-shortcode.php:21
+msgid "Cannot load gallery. Check the settings or API connection."
+msgstr "Kan galerij niet laden. Controleer de instellingen of API-verbinding."
+
+#: admin/settings-page.php:26
+msgid "Click the button below to connect to your HiDrive account:"
+msgstr ""
+"Klik op de onderstaande knop om verbinding te maken met uw HiDrive-account:"
+
+#: admin/settings-page.php:42
+msgid "Configuration"
+msgstr "Configuratie"
+
+#: admin/settings-page.php:29
+msgid "Connect to HiDrive"
+msgstr "Verbind met HiDrive"
+
+#. Name of the plugin
+msgid "HiGallery"
+msgstr "HiGallery"
+
+#: admin/settings-page.php:16
+msgid "HiGallery admin page"
+msgstr "HiGallery admin pagina"
+
+#: admin/settings-page.php:54
+msgid "HiGallery root folder"
+msgstr "HiGallery hoofdmap"
+
+#. Author of the plugin
+msgid "JoDa & Jake 🥷"
+msgstr ""
+
+#: includes/gallery-shortcode.php:60
+msgid "No albums found."
+msgstr "Geen albums gevonden."
+
+#: includes/gutenberg-block.php:28
+msgid "No albums selected."
+msgstr "Geen albums geselecteerd."
+
+#: includes/gallery-shortcode.php:63
+msgid "No photos found in this album."
+msgstr "Geen foto's gevonden in dit album."
+
+#: includes/gutenberg-block.php:46
+msgid "No valid access token."
+msgstr "Geen geldig toegangstoken"
+
+#: admin/settings-page.php:25
+msgid "OAuth2 Connection"
+msgstr "OAuth2 verbinding"
+
+#. Description of the plugin
+msgid ""
+"Show Strato HiDrive albums in WordPress with a fullscreen lightbox viewer. "
+"With secure OAuth2 connection."
+msgstr ""
+"Toon Strato HiDrive-albums in WordPress met een lightbox-viewer op volledig "
+"scherm. Met beveiligde OAuth2-verbinding."
+
+#: admin/settings-page.php:64
+msgid "Test mode"
+msgstr "Test modus"
+
+#: admin/settings-page.php:59
+msgid "Thumbnail width (px)"
+msgstr "Thumbnail breedte (px)"
+
+#: includes/gallery-shortcode.php:16
+msgid "Unable to load gallery: no valid access token."
+msgstr "Kan galerij niet laden: geen geldig toegangstoken."
+
+#: admin/settings-page.php:67
+msgid "Use demo albums (without HiDrive connection)"
+msgstr "Demo albums gebruiken (zonder HiDrive-verbinding)"
