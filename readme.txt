@@ -1,6 +1,6 @@
 === HiGallery ===
 Contributors: Jake & JoDa
-Tags: gallery, hidrive, lightbox, photoswipe, albums
+Tags: gallery, hidrive, lightbox, photoswipe, albums, photogallery
 Requirements at least: 6.0
 Tested up to: 6.8.1
 Stable tag: 0.9.0

@@ -1,15 +1,26 @@
 <?php
-/**
- * Plugin Name: HiGallery
- * Description: Show Strato HiDrive albums in WordPress with a fullscreen lightbox viewer. With secure OAuth2 connection.
- * Version: 0.9.0
- * Author: JoDa & Jake 🥷
- * License: GPL2
+/*
+ * Plugin Name:       HiGallery
+ * Plugin URI:        https://github.com/JoDa-wergoing/higallery
+ * Description:       Show Strato HiDrive albums in WordPress with a fullscreen lightbox viewer. With secure OAuth2 connection.
+ * Version:           0.9.0
+ * Requires at least: 6.0
+ * Requires PHP:      8.2
+ * Author:            JoDa & Jake 🥷
+ * Author URI:        https://wergoing.com
+ * License:           GPL v2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Update URI:        https://github.com/JoDa-wergoing/higallery
+ * Text Domain:       higallery
+ * Domain Path:       /languages
+ * Requires Plugins:  
  */
 
 add_action('plugins_loaded', function() {
     load_plugin_textdomain('higallery', false, dirname(plugin_basename(__FILE__)) . '/languages');
 });
+
+add_shortcode('higallery','higallery_shortcode');
 
 define('HIGALLERY_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('HIGALLERY_PLUGIN_URL', plugin_dir_url(__FILE__));
