@@ -36,15 +36,14 @@ function higallery_shortcode($atts) {
         $output .= '</div>';
     } elseif (!empty($api_response['albums'])) {
         foreach ($api_response['albums'] as $album) {
-            $decoded_name = urldecode($album['name']);
 
-            if (!empty($selected_albums) && !in_array($decoded_name, $selected_albums, true)) {
+            if (!empty($selected_albums) && !in_array($album['name'], $selected_albums, true)) {
                 continue;
             }
 
             $sub_path = $album['path'];
-            $clean_path = rawurldecode($sub_path);
-            $link = add_query_arg('higallery_path', rawurlencode($clean_path), get_permalink());
+            error_log("[HiGallery] shortcode sub_path: " . $sub_path);       
+            $link = add_query_arg('higallery_path', $sub_path, get_permalink());
 
             $output .= '<a href="' . esc_url($link) . '" style="width: 120px; text-align: center; text-decoration: none; color: inherit;">';
             $output .= '<div style="font-size: 48px; color: #555;">';
@@ -52,7 +51,7 @@ function higallery_shortcode($atts) {
                      . '<path d="M36.25 8.599h-15L16.25 4H3.75c-.995 0-1.948.394-2.652 1.094A3.73 3.73 0 0 0 0 7.737v24.526a3.73 3.73 0 0 0 1.098 2.643A3.757 3.757 0 0 0 3.75 36h32.5c.995 0 1.948-.394 2.652-1.094A3.73 3.73 0 0 0 40 32.264V12.335a3.73 3.73 0 0 0-1.098-2.642A3.757 3.757 0 0 0 36.25 8.6Z" fill="currentColor"/>'
                      . '</svg>';
             $output .= '</div>';
-            $output .= '<div style="margin-top: 8px; font-size: 14px;">' . esc_html($decoded_name) . '</div>';
+            $output .= '<div style="margin-top: 8px; font-size: 14px;">' . esc_html($album['name']) . '</div>';
             $output .= '</a>';
         }
 

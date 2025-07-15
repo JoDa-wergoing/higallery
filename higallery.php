@@ -3,7 +3,7 @@
  * Plugin Name:       HiGallery
  * Plugin URI:        https://github.com/JoDa-wergoing/higallery
  * Description:       Show Strato HiDrive albums in WordPress with a fullscreen lightbox viewer. With secure OAuth2 connection.
- * Version:           0.9.0
+ * Version:           0.9.1
  * Requires at least: 6.0
  * Requires PHP:      8.2
  * Author:            JoDa & Jake 🥷
@@ -29,7 +29,7 @@ require_once HIGALLERY_PLUGIN_DIR . 'includes/oauth.php';
 require_once HIGALLERY_PLUGIN_DIR . 'includes/oauth-callback.php';
 require_once HIGALLERY_PLUGIN_DIR . 'includes/api-client.php';
 require_once HIGALLERY_PLUGIN_DIR . 'includes/gallery-shortcode.php';
-require_once HIGALLERY_PLUGIN_DIR . 'includes/helpers.php';
+/** require_once HIGALLERY_PLUGIN_DIR . 'includes/helpers.php'; **/
 require_once HIGALLERY_PLUGIN_DIR . 'admin/settings-page.php';
 require_once HIGALLERY_PLUGIN_DIR . 'includes/proxy-endpoint.php';
 require_once HIGALLERY_PLUGIN_DIR . 'includes/gutenberg-block.php';
@@ -41,19 +41,7 @@ add_action('wp_enqueue_scripts', function () {
         [],
         '5.3.8'
     );
-wp_enqueue_script(
-    'higallery-js',
-    plugin_dir_url(__FILE__) . 'assets/js/higallery-block.js',
-    ['wp-i18n'],
-    '1.0',
-    true
-);
 
-wp_set_script_translations(
-    'higallery-js',
-    'higallery',
-    plugin_dir_path(__FILE__) . '/languages'
-);  
     wp_enqueue_script(
         'photoswipe-core',
         HIGALLERY_PLUGIN_URL . 'assets/photoswipe/photoswipe.umd.min.js',
@@ -61,7 +49,7 @@ wp_set_script_translations(
         '5.3.8',
         true
     );
-
+    
     wp_enqueue_script(
         'photoswipe-js',
         HIGALLERY_PLUGIN_URL . 'assets/photoswipe/photoswipe-lightbox.umd.min.js',
@@ -77,6 +65,7 @@ wp_set_script_translations(
         '1.0.0',
         true
     );
+    
     wp_enqueue_script(
         'higallery-lazyload',
         HIGALLERY_PLUGIN_URL . 'assets/js/higallery-lazyload.js',
@@ -93,11 +82,10 @@ add_action('enqueue_block_editor_assets', function () {
         '1.0.0',
         true
     );
-    wp_enqueue_script('higallery-block');
-
     wp_set_script_translations(
-        'higallery-block',
+        'higallery-js',
         'higallery',
-        HIGALLERY_PLUGIN_DIR . 'languages'
+        HIGALLERY_PLUGIN_URL . '/languages'
     );
+    
 });

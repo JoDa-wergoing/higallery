@@ -41,11 +41,11 @@ function higallery_api_get_folders($path, $token) {
         }
 
         $entry_info = [
-            'name' => $entry['name'] ?? '',
+            'name' => urldecode($entry['name']) ?? '',
             'type' => $entry['type'],
-            'path' => $entry['path'] ?? '',
+            'path' => urldecode($entry['path']) ?? '',
         ];
-
+        
         if (
             $entry['type'] === 'file' &&
             preg_match('/\.(jpg|jpeg|png|gif)$/i', $entry['name'])

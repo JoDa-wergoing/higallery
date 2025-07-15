@@ -12,7 +12,6 @@ First workable version without (known) bugs
 - Improved: Albums show their names with spaces (no more %20)
 - Improved: Root folder path uses the configured value by default (e.g. /users/jfdaam/albums)
 - Retained: Full original directory structure and functionality
-- Fix: No double encoding of album paths
 - Fix: Full PhotoSwipe retention + root folder + space fixes
 - Fix: Building file URL with esc_url instead of esc_attr to show correct thumbnails
 - Improved: Robust API client with better logging and fallback
@@ -20,3 +19,6 @@ First workable version without (known) bugs
 - PhotoSwipe images now work with full path + token
 - Robust distinction between albums and files
 - Add multi language
+
+- ## v0.9.1
+- FIX: Removed encoding/decoding from core php. Now only in api-client

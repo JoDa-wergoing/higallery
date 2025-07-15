@@ -3,7 +3,7 @@ Contributors: Jake & JoDa
 Tags: gallery, hidrive, lightbox, photoswipe, albums, photogallery
 Requirements at least: 6.0
 Tested up to: 6.8.1
-Stable tag: 0.9.0
+Stable tag: 0.9.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,8 @@ The plugin uses PhotoSwipe 5. You can add your own CSS or use PhotoSwipe themes.
 
 = 0.9 =
 This stable first pre-release
+= 0.9.1 =
+Cleaned up encoding/decoding api responses. Now only in api-client
 
 == Todo ==
 
