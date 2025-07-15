@@ -30,7 +30,7 @@
                     });
             }, []);
 
-            const allNames = albumsList.map(album => decodeURIComponent(album.name));
+            const allNames = albumsList.map(album => album.name); 
             const allSelected = allNames.every(name => attributes.albums.includes(name));
 
             const checkboxes = albumsList.length === 0
@@ -47,16 +47,15 @@
                         }
                     }),
                     ...albumsList.map(function (album) {
-                        const decodedName = decodeURIComponent(album.name);
                         return el(CheckboxControl, {
                             key: album.path,
-                            label: decodedName,
-                            checked: attributes.albums.includes(decodedName),
+                            label: album.name,
+                            checked: attributes.albums.includes(album.name),
                             __nextHasNoMarginBottom: true,
                             onChange: function (isChecked) {
                                 const newSelection = isChecked
-                                    ? [...attributes.albums, decodedName]
-                                    : attributes.albums.filter(name => name !== decodedName);
+                                    ? [...attributes.albums, album.name]
+                                    : attributes.albums.filter(name => name !== album.name);
                                 setAttributes({ albums: newSelection });
                             }
                         });

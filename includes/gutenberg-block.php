@@ -52,7 +52,7 @@ function higallery_rest_get_albums() {
     }
     $albums = array_map(function ($album) {
         return [
-            'name' => urldecode($album['name']),
+            'name' => $album['name'],
             'path' => $album['path'],
         ];
     }, $api_response['albums']);
