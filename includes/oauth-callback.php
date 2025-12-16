@@ -1,0 +1,68 @@
+<?php
+
+add_action('rest_api_init', function () {
+    register_rest_route('higallery', '/oauth/callback', [
+        'methods'  => 'GET',
+        'callback' => 'higallery_handle_oauth_callback',
+        // Open callback is oké, maar we vertrouwen op state:
+        'permission_callback' => '__return_true',
+    ]);
+});
+
+/**
+ * OAuth callback: verifieer state, wissel code voor tokens, sla op en redirect naar settings.
+ */
+function higallery_handle_oauth_callback($request) {
+    $code  = sanitize_text_field($request->get_param('code'));
+    $state = sanitize_text_field($request->get_param('state'));
+
+    if (empty($code) || empty($state)) {
+        return higallery_callback_redirect(__('OAuth Callback: ontbrekende code of state.', 'higallery'), 'error');
+    }
+
+    // State controleren en ongeldig maken (one-time)
+    $ok = get_transient('higallery_oauth_state_' . $state);
+    delete_transient('higallery_oauth_state_' . $state);
+    if (!$ok) {
+        return higallery_callback_redirect(__('Ongeldige of verlopen state. Probeer opnieuw.', 'higallery'), 'error');
+    }
+
+    // Token exchange
+    $tokens = higallery_exchange_code_for_token($code);
+    if (is_wp_error($tokens)) {
+        return higallery_callback_redirect(__('Token exchange mislukt. Controleer client-id/-secret, scope en redirect URI.', 'higallery'), 'error');
+    }
+
+    $access  = isset($tokens['access_token'])  ? $tokens['access_token']  : '';
+    $refresh = isset($tokens['refresh_token']) ? $tokens['refresh_token'] : '';
+    $exp     = isset($tokens['expires_in'])    ? (int)$tokens['expires_in'] : 0;
+
+    if ($access === '' || $refresh === '') {
+        return higallery_callback_redirect(__('Provider gaf geen volledige tokens terug (missende refresh_token?). Controleer scope (bijv. user,ro) en app-config.', 'higallery'), 'error');
+    }
+
+    update_option('higallery_access_token',  $access);
+    update_option('higallery_refresh_token', $refresh);
+    if ($exp > 0) {
+        update_option('higallery_token_expires', time() + $exp - 30);
+    }
+
+    return higallery_callback_redirect(__('HiDrive verbinding geslaagd!', 'higallery'), 'success');
+}
+
+/**
+ * Stuur terug naar de settings pagina met een bericht.
+ */
+function higallery_callback_redirect($message, $type = 'success') {
+    // Gebruik een centrale slug-constante als je die in higallery.php definieert
+    // define('HIGALLERY_MENU_SLUG', 'higallery-settings');
+    // $url = menu_page_url(HIGALLERY_MENU_SLUG, false);
+
+    $url = admin_url('admin.php?page=higallery-settings');
+    $url = add_query_arg([
+        'higallery_msg'  => rawurlencode($message),
+        'higallery_type' => $type,
+    ], $url);
+
+    return new WP_REST_Response(['redirect' => $url], 302, ['Location' => $url]);
+}
