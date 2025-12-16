@@ -1,56 +1,49 @@
-# HiGallery
+HiGallery
 
-HiGallery is a WordPress plugin that displays photo albums stored on **HiDrive** directly in your WordPress site.
+HiGallery is a lightweight WordPress plugin that allows you to browse server-side photo folders as structured albums directly from your WordPress site.
 
-It uses a **secure server-side proxy**, ensuring that access tokens are never exposed to visitors.
+The plugin is designed for users who want simple, fast access to existing photo collections without importing media into the WordPress Media Library.
 
-## Features
+Features
 
-- Browse HiDrive folders as photo albums
-- Secure server-side access
-- Thumbnail support
-- Efficient caching (ETag, browser cache, transients)
-- WordPress coding standards compliant
-- No media import into WordPress required
+Display photo folders as albums using a shortcode
 
-## Requirements
+Automatic detection of sub-albums and images
 
-- WordPress 6.0+
-- PHP 8.0+
-- HiDrive account with API access
+Secure REST API for image delivery
 
-## Installation
+Configurable cover image per album
 
-1. Download the plugin zip
-2. Upload via **Plugins → Add New → Upload Plugin**
-3. Activate the plugin
-4. Configure settings under **Settings → HiGallery**
+Lazy loading for improved performance
 
-## Usage
+Designed with security and performance in mind
 
-Basic shortcode:
+Requirements
 
-```shortcode
-[higallery path="/users/yourname/photoalbums"]
+WordPress 6.0 or higher
 
-Security model
+PHP 8.0 or higher
 
-HiDrive access tokens are stored server-side only
+Installation
 
-Images are streamed through WordPress REST endpoints
+Upload the higallery folder to the /wp-content/plugins/ directory
 
-Tokens are never exposed in HTML, JavaScript, or URLs
+Activate the plugin through the WordPress admin panel
 
-Development notes
+Add the HiGallery shortcode to any page or post
 
-REST endpoints are used for file and thumbnail proxying
+Usage
 
-Thumbnails are cached to reduce HiDrive API calls
+Use the provided shortcode to display an album:
 
-Fully compatible with WordPress Plugin Checker
+[higallery]
+
+Additional parameters can be configured via the plugin settings page.
+
+Development
+
+This repository is intended for development and issue tracking. End users should install the plugin via WordPress.org.
 
 License
 
-GPL v2 or later
-© 2025
-
+GPLv2 or later
