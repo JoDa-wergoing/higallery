@@ -1,8 +1,11 @@
 HiGallery
 
-HiGallery is a lightweight WordPress plugin that allows you to browse server-side photo folders as structured albums directly from your WordPress site.
+HiGallery lets you display your STRATO HiDrive photo folders directly on your WordPress site as structured photo albums.
 
-The plugin is designed for users who want simple, fast access to existing photo collections without importing media into the WordPress Media Library.
+Unlike traditional gallery plugins, HiGallery does not import images into the WordPress Media Library. 
+Images stay in HiDrive and are delivered securely to your site, which is ideal for large collections or photo archives that are managed outside WordPress.
+
+HiGallery focuses on simplicity, performance, and security, following WordPress.org best practices.
 
 Features
 

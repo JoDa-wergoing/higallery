@@ -1,12 +1,21 @@
 <?php
 /**
- * HiGallery - veilige REST proxy voor HiDrive files
+ * HiGallery
  *
- * Doel:
- * - Alleen bestanden binnen de ingestelde root folder serven (higallery_root_folder)
- * - Geen WP_REST_Response::set_body() gebruiken (bestaat niet)
- * - Binary output rechtstreeks streamen (voorkomt JSON-encoding / memory issues)
- * - (Optioneel) Range header doorgeven voor partial content (handig voor grote bestanden)
+ * @package HiGallery
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 add_action('rest_api_init', function () {
