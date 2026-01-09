@@ -18,82 +18,151 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-function higallery_shortcode($atts) {
-    $default_root = get_option('higallery_root_folder', '/');
-    $thumb_size = get_option('higallery_thumbnail_size', 300);
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+function higallery_gallery_shortcode($atts) {
     $atts = shortcode_atts([
-        'path' => $default_root,
-        'albums' => ''
-    ], $atts);
-
-/**    $path = isset($_GET['higallery_path']) ? $_GET['higallery_path'] : $atts['path']; **/
-
-    $path = $atts['path'];
-
-if ( isset($_GET['higallery_path']) ) {
-    $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
-    if ( $nonce && wp_verify_nonce($nonce, 'higallery_browse') ) {
-        $path = sanitize_text_field(wp_unslash($_GET['higallery_path']));
-    }
-}
-    
-    $selected_albums = array_filter(array_map('trim', explode(';', $atts['albums'])));
+        'path'   => '',
+        'albums' => '',
+    ], $atts, 'higallery');
 
     $token = higallery_get_valid_access_token();
     if (!$token) {
-        return '<p>' . __('Unable to load gallery: no valid access token.','higallery') . '</p>';
+        return '<p>No HiDrive connection. Please connect HiDrive first.</p>';
+    }
+
+    $default_root = get_option('higallery_root_folder', '/');
+
+    $path = $atts['path'] !== '' ? (string) $atts['path'] : '';
+    if ($path === '' && isset($_GET['higallery_path'], $_GET['_wpnonce'])) {
+        $nonce = sanitize_text_field(wp_unslash($_GET['_wpnonce']));
+        if (wp_verify_nonce($nonce, 'higallery_browse')) {
+            $path = (string) wp_unslash($_GET['higallery_path']);
+        }
+    }
+    if ($path === '') {
+        $path = $default_root;
+    }
+
+    $selected_albums = [];
+    if (isset($atts['albums']) && $atts['albums'] !== '' && $atts['albums'] !== null) {
+        if (is_array($atts['albums'])) {
+            $selected_albums = array_filter(array_map('trim', $atts['albums']));
+        } else {
+            $raw = (string) $atts['albums'];
+            $raw = str_replace(['“', '”', '’'], ['"', '"', "'"], $raw);
+            $delimiter = (strpos($raw, ';') !== false) ? ';' : ',';
+            $selected_albums = array_filter(array_map('trim', explode($delimiter, $raw)));
+        }
+    }
+
+    $selected_norm = [];
+    foreach ($selected_albums as $n) {
+        $n = strtolower(trim((string) $n));
+        if ($n !== '') {
+            $selected_norm[] = $n;
+        }
     }
 
     $api_response = higallery_api_get_folders($path, $token);
-    if (empty($api_response) || is_wp_error($api_response)) {
-        return '<p>'. __('Cannot load gallery. Check the settings or API connection.','higallery') . ' </p>';
+    if (empty($api_response) || !is_array($api_response)) {
+        return '<p>Cannot load gallery.</p>';
     }
 
-    $output = '<div class="higallery-wrapper" style="display: flex; flex-wrap: wrap; gap: 20px;">';
+    $output = '<div class="higallery-wrapper" style="display:flex; flex-wrap:wrap; gap:20px;">';
 
-    if (!empty($api_response['images'])) {
-        $output .= '<div class="pswp-gallery" style="display: flex; flex-wrap: wrap; gap: 10px;">';
+    if (!empty($api_response['images']) && is_array($api_response['images'])) {
+
+        $rendered = 0;
+        $output .= '<div class="pswp-gallery higallery" style="display:flex; flex-wrap:wrap; gap:10px;">';
+
         foreach ($api_response['images'] as $image) {
-            $file_url = rest_url('higallery/v1/file') . '?path=' . rawurlencode($image['path']);
-            $thumb_url = rest_url('higallery/v1/thumb') . '?path=' . rawurlencode($image['path']) . '&width=' . intval($thumb_size);
-
-            $output .= '<a href="' . esc_url($file_url) . '" data-pswp-width="1600" data-pswp-height="1067">';
-            $output .= '<img src="' . esc_url($thumb_url) . '" alt="' . esc_attr($image['name']) . '" />';
-            $output .= '</a>';
-        }
-        $output .= '</div>';
-    } elseif (!empty($api_response['albums'])) {
-        foreach ($api_response['albums'] as $album) {
-
-            if (!empty($selected_albums) && !in_array($album['name'], $selected_albums, true)) {
+            if (empty($image['path']) || empty($image['name'])) {
                 continue;
             }
 
-            $sub_path = $album['path'];
+            $file_url = add_query_arg('path', $image['path'], rest_url('higallery/v1/file'));
+
+            $thumb_w  = 150;
+            $medium_w = 1600;
+            $large_w  = 2000;
+
+            $thumb_url  = add_query_arg(['path' => $image['path'], 'width' => $thumb_w],  rest_url('higallery/v1/thumb'));
+            $medium_url = add_query_arg(['path' => $image['path'], 'width' => $medium_w], rest_url('higallery/v1/thumb'));
+            $large_url  = add_query_arg(['path' => $image['path'], 'width' => $large_w],  rest_url('higallery/v1/thumb'));
+
+            $pswp_w = !empty($image['width'])  ? (int) $image['width']  : 1600;
+            $pswp_h = !empty($image['height']) ? (int) $image['height'] : 1067;
+
+            $output .= '<a class="higallery-item" href="' . esc_url($file_url) . '"'
+                . ' data-pswp-width="' . esc_attr($pswp_w) . '"'
+                . ' data-pswp-height="' . esc_attr($pswp_h) . '"'
+                . ' data-hg-medium="' . esc_url($medium_url) . '" data-hg-medium-w="' . esc_attr($medium_w) . '"'
+                . ' data-hg-large="' . esc_url($large_url) . '" data-hg-large-w="' . esc_attr($large_w) . '"'
+                . ' data-hg-orig="' . esc_url($file_url) . '" data-hg-orig-w="' . esc_attr($pswp_w) . '">';
+
+            $output .= '<img decoding="async" src="' . esc_url($thumb_url) . '" alt="' . esc_attr($image['name']) . '" loading="lazy" />';
+            $output .= '</a>';
+
+            $rendered++;
+        }
+
+        $output .= '</div>';
+
+        if ($rendered === 0) {
+            $output .= '<p>No images found in this album.</p>';
+        }
+
+    } elseif (!empty($api_response['albums']) && is_array($api_response['albums'])) {
+
+        $rendered = 0;
+
+        foreach ($api_response['albums'] as $album) {
+            if (empty($album['name']) || empty($album['path'])) {
+                continue;
+            }
+
+            $album_name = (string) $album['name'];
+            $album_path = (string) $album['path'];
+
+            if (!empty($selected_norm)) {
+                $needle = strtolower(trim($album_name));
+                if (!in_array($needle, $selected_norm, true)) {
+                    continue;
+                }
+            }
+
             $link = add_query_arg([
-                'higallery_path' => $sub_path,
+                'higallery_path' => $album_path,
                 '_wpnonce'       => wp_create_nonce('higallery_browse'),
             ], get_permalink());
 
-            $output .= '<a href="' . esc_url($link) . '" style="width: 120px; text-align: center; text-decoration: none; color: inherit;">';
-            $output .= '<div style="font-size: 48px; color: #555;">';
-            $output .= '<svg viewBox="0 0 40 40" width="48" height="48" fill="none" xmlns="http://www.w3.org/2000/svg">'
-                     . '<path d="M36.25 8.599h-15L16.25 4H3.75c-.995 0-1.948.394-2.652 1.094A3.73 3.73 0 0 0 0 7.737v24.526a3.73 3.73 0 0 0 1.098 2.643A3.757 3.757 0 0 0 3.75 36h32.5c.995 0 1.948-.394 2.652-1.094A3.73 3.73 0 0 0 40 32.264V12.335a3.73 3.73 0 0 0-1.098-2.642A3.757 3.757 0 0 0 36.25 8.6Z" fill="currentColor"/>'
-                     . '</svg>';
-            $output .= '</div>';
-            $output .= '<div style="margin-top: 8px; font-size: 14px;">' . esc_html($album['name']) . '</div>';
+
+
+            
+            $output .= '<a href="' . esc_url($link) . '" style="width:120px; display:block; text-align:center; text-decoration:none; color:inherit;">';
+            $output .= '<span class="dashicons dashicons-portfolio" aria-hidden="true"></span>'
+//            $output .= '<div style="font-size:48px; color:#555;">📁</div>';
+            $output .= '<div style="font-size:12px; word-break:break-word;">' . esc_html($album_name) . '</div>';
             $output .= '</a>';
+
+            $rendered++;
         }
 
-        if ($output === '<div class="higallery-wrapper" style="display: flex; flex-wrap: wrap; gap: 20px;">') {
-            $output .= '<p>'. __('No albums found.','higallery') . '</p>';
+        if ($rendered === 0) {
+            if (!empty($selected_norm)) {
+                $output .= '<p>No albums matched the albums filter.</p>';
+            } else {
+                $output .= '<p>No albums found.</p>';
+            }
         }
+
     } else {
-        $output .= '<p>' . __('No photos found in this album.','higallery') . '</p>';
+        $output .= '<p>No photos found in this album.</p>';
     }
 
     $output .= '</div>';
     return $output;
 }
-?>
+
+add_shortcode('higallery', 'higallery_gallery_shortcode');

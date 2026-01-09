@@ -3,7 +3,7 @@
  * Plugin Name: HiGallery
  * Plugin URI:  https://wergoing.com/foto-album
  * Description: Description: Show your STRATO HiDrive photo folders as secure WordPress photo albums without importing images.
- * Version:     1.1.0
+ * Version:     1.2.0
  * Author:      weRgoing JoDa
  * Author URI:  https://wergoing.com
  * Requires at least: 6.0
@@ -36,6 +36,7 @@ require_once HIGALLERY_PLUGIN_DIR . 'includes/oauth.php';
 require_once HIGALLERY_PLUGIN_DIR . 'includes/oauth-callback.php';
 require_once HIGALLERY_PLUGIN_DIR . 'includes/api-client.php';
 require_once HIGALLERY_PLUGIN_DIR . 'includes/gallery-shortcode.php';
+require_once HIGALLERY_PLUGIN_DIR . 'includes/all-albums-shortcode.php';
 require_once HIGALLERY_PLUGIN_DIR . 'admin/settings-page.php';
 require_once HIGALLERY_PLUGIN_DIR . 'includes/proxy-endpoint.php';
 require_once HIGALLERY_PLUGIN_DIR . 'includes/gutenberg-block.php';
@@ -68,15 +69,23 @@ add_action('wp_enqueue_scripts', function () {
         'photoswipe-init',
         HIGALLERY_PLUGIN_URL . 'assets/js/photoswipe-init.js',
         [ 'photoswipe-js' ],
-        '1.0.0',
+        '2.0.0',
         true
     );
+
+    wp_enqueue_script(
+        'higallery-photoswipe',
+        HIGALLERY_PLUGIN_URL . 'assets/js/higallery-photoswipe.js',
+        ['photoswipe-lightbox'],
+        '1.2.0',
+        true
+);
     
     wp_enqueue_script(
         'higallery-lazyload',
         HIGALLERY_PLUGIN_URL . 'assets/js/higallery-lazyload.js',
         [],
-        '1.1.0',
+        '1.2.0',
         true
     );
 });

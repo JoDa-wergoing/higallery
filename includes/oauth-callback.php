@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+if ( ! defined( 'ABSPATH' ) ) { exit; }
+
 add_action('rest_api_init', function () {
     register_rest_route('higallery', '/oauth/callback', [
         'methods'  => 'GET',
@@ -27,9 +29,6 @@ add_action('rest_api_init', function () {
     ]);
 });
 
-/**
- * OAuth callback: verifieer state, wissel code voor tokens, sla op en redirect naar settings.
- */
 function higallery_handle_oauth_callback($request) {
     $code  = sanitize_text_field($request->get_param('code'));
     $state = sanitize_text_field($request->get_param('state'));
@@ -38,14 +37,12 @@ function higallery_handle_oauth_callback($request) {
         return higallery_callback_redirect(__('OAuth Callback: ontbrekende code of state.', 'higallery'), 'error');
     }
 
-    // State controleren en ongeldig maken (one-time)
     $ok = get_transient('higallery_oauth_state_' . $state);
     delete_transient('higallery_oauth_state_' . $state);
     if (!$ok) {
         return higallery_callback_redirect(__('Ongeldige of verlopen state. Probeer opnieuw.', 'higallery'), 'error');
     }
 
-    // Token exchange
     $tokens = higallery_exchange_code_for_token($code);
     if (is_wp_error($tokens)) {
         return higallery_callback_redirect(__('Token exchange mislukt. Controleer client-id/-secret, scope en redirect URI.', 'higallery'), 'error');
@@ -68,13 +65,7 @@ function higallery_handle_oauth_callback($request) {
     return higallery_callback_redirect(__('HiDrive verbinding geslaagd!', 'higallery'), 'success');
 }
 
-/**
- * Stuur terug naar de settings pagina met een bericht.
- */
 function higallery_callback_redirect($message, $type = 'success') {
-    // Gebruik een centrale slug-constante als je die in higallery.php definieert
-    // define('HIGALLERY_MENU_SLUG', 'higallery-settings');
-    // $url = menu_page_url(HIGALLERY_MENU_SLUG, false);
 
     $url = admin_url('admin.php?page=higallery-settings');
     $url = add_query_arg([

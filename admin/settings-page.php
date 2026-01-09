@@ -1,17 +1,32 @@
 <?php
 /**
- * HiGallery admin settings page.
+ * HiGallery
  *
  * @package HiGallery
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 add_action( 'admin_menu', function () {
 	add_options_page(
-		__( 'HiGallery', 'higallery' ),          // Page title
-		__( 'HiGallery', 'higallery' ),          // Menu title
-		'manage_options',                        // Capability
-		'higallery-settings',                    // Menu slug
-		'higallery_render_settings_page'         // Callback
+		__( 'HiGallery', 'higallery' ),          
+		__( 'HiGallery', 'higallery' ),          
+		'manage_options',                        
+		'higallery-settings',                    
+		'higallery_render_settings_page'         
 	);
 } );
 
@@ -44,10 +59,6 @@ function higallery_render_settings_page() {
 	<?php
 }
 
-/**
- * Sanitize helpers
- */
-
 function higallery_sanitize_root_folder( $value ) {
 	$value = is_string( $value ) ? sanitize_text_field( $value ) : '';
 
@@ -75,12 +86,6 @@ function higallery_sanitize_thumbnail_size( $value ) {
 	return max( 50, min( 1000, $value ) );
 }
 
-/**
- * Sanitize client secret:
- * - keep stored value if input is empty
- * - keep stored value if input consists only of '*' with same length
- * - otherwise store new value
- */
 function higallery_sanitize_client_secret( $input ) {
 	$input  = is_string( $input ) ? trim( $input ) : '';
 	$stored = (string) get_option( 'higallery_client_secret', '' );
@@ -101,10 +106,6 @@ function higallery_sanitize_client_secret( $input ) {
 }
 
 add_action( 'admin_init', function () {
-
-	/**
-	 * Settings registration
-	 */
 
 	register_setting(
 		'higallery_settings',
@@ -151,20 +152,12 @@ add_action( 'admin_init', function () {
 		)
 	);
 
-	/**
-	 * Settings section
-	 */
-
 	add_settings_section(
 		'higallery_main',
 		esc_html__( 'Configuration', 'higallery' ),
 		null,
 		'higallery-settings'
 	);
-
-	/**
-	 * Fields
-	 */
 
 	add_settings_field(
 		'higallery_client_id',

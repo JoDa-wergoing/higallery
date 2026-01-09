@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+if ( ! defined( 'ABSPATH' ) ) { exit; }
+
 add_action('enqueue_block_editor_assets', function () {
     wp_enqueue_script(
         'higallery-block',
