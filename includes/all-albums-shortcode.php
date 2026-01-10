@@ -85,20 +85,17 @@ function higallery_all_albums_shortcode($atts = []): string {
     if ($path === '') {
         $path = (string) $default_root;
     }
-
     // If the visitor clicked an album, reuse the existing [higallery] browsing behavior.
-    if (isset($_GET['higallery_path'], $_GET['_wpnonce'])) {
-        $nonce = sanitize_text_field(wp_unslash($_GET['_wpnonce']));
-        if (wp_verify_nonce($nonce, 'higallery_browse')) {
-            $clicked_path = (string) wp_unslash($_GET['higallery_path']);
-            // Render the regular gallery view for the clicked folder.
-            if (function_exists('higallery_gallery_shortcode')) {
-                return higallery_gallery_shortcode(['path' => $clicked_path]);
-            }
+    $nonce        = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+    $clicked_path = isset( $_GET['higallery_path'] ) ? sanitize_textarea_field( wp_unslash( $_GET['higallery_path'] ) ) : '';
+
+    if ( $nonce && $clicked_path && wp_verify_nonce( $nonce, 'higallery_browse' ) ) {
+        // Render the regular gallery view for the clicked folder.
+        if ( function_exists( 'higallery_gallery_shortcode' ) ) {
+            return higallery_gallery_shortcode( [ 'path' => $clicked_path ] );
         }
     }
-
-    $albums = higallery_get_albums_cached($path, (string) $token);
+$albums = higallery_get_albums_cached($path, (string) $token);
 
     if (empty($albums)) {
         return '<p>No albums found.</p>';

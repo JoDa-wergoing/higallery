@@ -31,16 +31,23 @@ function higallery_gallery_shortcode($atts) {
         return '<p>No HiDrive connection. Please connect HiDrive first.</p>';
     }
 
-    $default_root = get_option('higallery_root_folder', '/');
+    $default_root = get_option( 'higallery_root_folder', '/' );
 
-    $path = $atts['path'] !== '' ? (string) $atts['path'] : '';
-    if ($path === '' && isset($_GET['higallery_path'], $_GET['_wpnonce'])) {
-        $nonce = sanitize_text_field(wp_unslash($_GET['_wpnonce']));
-        if (wp_verify_nonce($nonce, 'higallery_browse')) {
-            $path = (string) wp_unslash($_GET['higallery_path']);
+    // Shortcode attribute takes precedence if provided.
+    $path = isset( $atts['path'] ) ? sanitize_textarea_field( (string) $atts['path'] ) : '';
+
+    // If the visitor clicked an album, reuse the browse behavior (nonce-protected).
+    if ( $path === '' && isset( $_GET['higallery_path'], $_GET['_wpnonce'] ) ) {
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized immediately.
+        $nonce = sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) );
+
+        if ( wp_verify_nonce( $nonce, 'higallery_browse' ) ) {
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized immediately.
+            $path = sanitize_textarea_field( wp_unslash( $_GET['higallery_path'] ) );
         }
     }
-    if ($path === '') {
+
+    if ( $path === '' ) {
         $path = $default_root;
     }
 

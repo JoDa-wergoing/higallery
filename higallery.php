@@ -14,9 +14,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-if ( ! defined('ABSPATH') ) {
-    exit;
-}
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 // Definieer een constante voor de menu-slug
 if ( ! defined('HIGALLERY_MENU_SLUG') ) {
