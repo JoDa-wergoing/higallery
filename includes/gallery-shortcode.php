@@ -141,7 +141,7 @@ function higallery_gallery_shortcode($atts) {
 
             
             $output .= '<a href="' . esc_url($link) . '" style="width:120px; display:block; text-align:center; text-decoration:none; color:inherit;">';
-            $output .= '<span class="dashicons dashicons-portfolio" aria-hidden="true"></span>'
+            $output .= '<span class="dashicons dashicons-portfolio" aria-hidden="true"></span>';
 //            $output .= '<div style="font-size:48px; color:#555;">📁</div>';
             $output .= '<div style="font-size:12px; word-break:break-word;">' . esc_html($album_name) . '</div>';
             $output .= '</a>';
